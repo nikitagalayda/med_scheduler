@@ -9,6 +9,9 @@ class Medicine():
         self.intervalsTaken = intervalsTaken
         self.preferredTake = preferredTake
         self.moveAhead = None
+        self.shifts = {'0': 0, '1': 0}
+        self.shiftTimes = []
+        # self.takeEarly = True
     
     def getTimeInterval(self, daily, time):
         for i in range(len(daily)):
@@ -32,6 +35,7 @@ class Medicine():
     def takeMedicine(self):
         self.timeSinceDose = 0
         self.preferredTake = -1
+        self.moveAhead = None
 
     def checkAhead(self, currentTime, daily):
         # localTime = currentTime % 288
@@ -39,6 +43,9 @@ class Medicine():
         currentInterval = self.getTimeInterval(daily, currentTime)
         timeBuffer = self.maxTime - self.minTime
         
+        if(self.moveAhead == 1):
+            return
+
         if(self.preferredTake >= 0):
             return
 
@@ -58,8 +65,11 @@ class Medicine():
             if(aheadInterval == 0):
                 self.preferredTake = aheadTime
                 return
-
-        # self.moveAhead = self.shiftAhead(currentTime, daily)
+        
+        self.moveAhead = self.shiftAhead(currentTime, daily)
+        if(self.moveAhead != None):
+            self.shiftTimes.append(currentTime)
+            self.shifts[str(self.moveAhead)] += 1
     
     # for shifting towards type 0 EXPERIMENTAL
     def shiftAhead(self, currentGlobalTime, daily):
@@ -68,6 +78,9 @@ class Medicine():
         checkBehindRange = localTime
         currentBest = None
         self.moveAhead = None
+
+        if(self.moveAhead != None):
+            return
 
         if(self.getTimeInterval(daily, currentGlobalTime) == 0):
             return None
@@ -78,6 +91,7 @@ class Medicine():
             
             if(currentType == 0):
                 # return 0
+                # print("AHEAD best: {}".format(currentBest))
                 currentBest = i
                 break
         
@@ -86,18 +100,25 @@ class Medicine():
             currentType = self.getTimeInterval(daily, behindTime)
 
             if(currentType == 0):
+                # print("YES TYPE 0 BEHIND")
                 if(currentBest == None):
+                    # print("BEHIND best: {}".format(i))
                     # return 1
                     # currentBest = i
                     return 0
                     # break
                 elif(i < currentBest):
+                    # print("BEHIND best: {}".format(i))
                     # currentBest = i
                     return 0
                 else:
+                    # print("AHEAD best: {}".format(currentBest))
                     return 1
                     # break
                     # return 1
+            # else:
+
+                # print("NO TYPE 0 BEHIND at {}, at type {}".format(currentGlobalTime, currentType))
         
         return None
 
@@ -133,7 +154,4 @@ class Medicine():
             if i == False:
                 notTaken += 1
         
-        return notTaken / len(taken)
-        
-    
-    
+        return notTaken / len(taken)    
