@@ -43,11 +43,11 @@ def getTimeInterval(time):
 
 def stringifyList(my_list):
     my_str = ""
-    for i in my_list:
+    for i in range(len(my_list)):
         if i != 0:
-            my_str = my_str + " " + str(i)
+            my_str = my_str + " " + str(my_list[i])
         else:
-            my_str = str(i)
+            my_str = str(my_list[i])
     
     return my_str
 
@@ -65,6 +65,7 @@ medicines = [med_1, med_2, med_3, med_4]
 
 for med in medicines:
         med.takeMedicine()
+        med.takenTimes.append(0)
         med.intervalsTaken.append(getTimeInterval(1))
 
 output = "0800 4 1 2 3 4\n"
@@ -73,7 +74,7 @@ output = "0800 4 1 2 3 4\n"
 # total_performance = [0, 0, 0, 0]
 
 # for tests in range(test_range):
-for i in range(int(num_intervals)):
+for i in range(1, int(num_intervals)):
     # Main loop where each iteration is a 5 minute inverval
     takenMedicines = []
     for med in medicines:
@@ -86,11 +87,13 @@ for i in range(int(num_intervals)):
             med.checkAhead(i, daily)
             if(med.preferredTake < 0):
                 med.takeMedicine()
+                med.takenTimes.append(i)
                 takenMedicines.append(med.name)
                 med.intervalsTaken.append(getTimeInterval(i))
             else:
                 if(i == med.preferredTake):
                     med.takeMedicine()
+                    med.takenTimes.append(i)
                     takenMedicines.append(med.name)
                     med.intervalsTaken.append(getTimeInterval(i))
 
@@ -102,8 +105,9 @@ for i in range(int(num_intervals)):
         if(len(mins) == 1):
             mins = "0" + mins
 
-        curr_output = hours + mins + " " + str(len(takenMedicines)) + stringifyList(takenMedicines)
-        
+        # print(takenMedicines)
+        curr_output = hours + mins + " " + str(len(takenMedicines)) + " " + stringifyList(takenMedicines)
+        # print(curr_output)
         output += (curr_output + "\n")
 
 outputToFile(output)
@@ -123,12 +127,14 @@ outputToFile(output)
 idx = 0
 for med in medicines:
     print("Medicine {}: {}".format(idx+1, medicines[idx].calculateErrorRate()))
-    # print("Shifts AHEAD: {}".format(medicines[idx].shifts['1']))
-    # print("Shifts BEHIND: {}".format(medicines[idx].shifts['0']))
-    # print("Shift times: {}".format(medicines[idx].shiftTimes))
+#     # print("Shifts AHEAD: {}".format(medicines[idx].shifts['1']))
+#     # print("Shifts BEHIND: {}".format(medicines[idx].shifts['0']))
+#     # print("Shift times: {}".format(medicines[idx].shiftTimes))
     idx += 1
-    
-
+# idx = 0
+# for med in medicines:
+#     print("Medicine {}: {}".format(idx+1, medicines[idx].takenTimes))
+#     idx += 1
 
 
 # print(med_1.intervalsTaken)

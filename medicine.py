@@ -11,6 +11,7 @@ class Medicine():
         self.moveAhead = None
         self.shifts = {'0': 0, '1': 0}
         self.shiftTimes = []
+        self.takenTimes = []
         # self.takeEarly = True
     
     def getTimeInterval(self, daily, time):
@@ -35,6 +36,7 @@ class Medicine():
     def takeMedicine(self):
         self.timeSinceDose = 0
         self.preferredTake = -1
+        # self.moveAhead = self.shiftAhead(currentTime, daily)
         self.moveAhead = None
 
     def checkAhead(self, currentTime, daily):
@@ -66,7 +68,7 @@ class Medicine():
                 self.preferredTake = aheadTime
                 return
         
-        self.moveAhead = self.shiftAhead(currentTime, daily)
+        # self.moveAhead = self.shiftAhead(currentTime, daily)
         if(self.moveAhead != None):
             self.shiftTimes.append(currentTime)
             self.shifts[str(self.moveAhead)] += 1
