@@ -16,6 +16,7 @@ daily = [
     (192, 2),
     (288, 0),
 ]
+start_time = 8
 
 # STARTING AT 12:00
 # daily = [
@@ -32,6 +33,7 @@ daily = [
 #     (252, 1),
 #     (288, 0),
 # ]
+# start_time = 12
 
 num_intervals = 168*60/5
 
@@ -64,10 +66,11 @@ med_4 = Medicine(4, 259, 317, 0, [], -1)
 medicines = [med_1, med_2, med_3, med_4]
 
 for med in medicines:
-        med.takeMedicine()
+        med.takeMedicine(0, daily)
         med.takenTimes.append(0)
         med.intervalsTaken.append(getTimeInterval(1))
 
+# output = "0800 4 1 2 3 4\n"
 output = "0800 4 1 2 3 4\n"
 
 # test_range = 100
@@ -81,24 +84,24 @@ for i in range(1, int(num_intervals)):
         med.updateTime()
         conditional = med.minTimePassed()
 
-        if((med.moveAhead != None) and (med.moveAhead == 1)):
-            conditional = med.atMaxTime()
+        # if((med.moveAhead != None) and (med.moveAhead == 1)):
+        #     conditional = med.atMaxTime()
         if(conditional):
             med.checkAhead(i, daily)
             if(med.preferredTake < 0):
-                med.takeMedicine()
+                med.takeMedicine(i, daily)
                 med.takenTimes.append(i)
                 takenMedicines.append(med.name)
                 med.intervalsTaken.append(getTimeInterval(i))
             else:
                 if(i == med.preferredTake):
-                    med.takeMedicine()
+                    med.takeMedicine(i, daily)
                     med.takenTimes.append(i)
                     takenMedicines.append(med.name)
                     med.intervalsTaken.append(getTimeInterval(i))
 
     if(len(takenMedicines) != 0):
-        hours = str(math.floor((i * 5) / 60) + 8)
+        hours = str(math.floor((i * 5) / 60) + start_time)
         if(len(hours) == 1):
             hours = "0" + hours
         mins = str((i * 5) % 60)
@@ -106,7 +109,11 @@ for i in range(1, int(num_intervals)):
             mins = "0" + mins
 
         # print(takenMedicines)
+        # mark = ""
+        # if(getTimeInterval(i) != 0):
+        #     mark = "{} --> ".format(getTimeInterval(i))
         curr_output = hours + mins + " " + str(len(takenMedicines)) + " " + stringifyList(takenMedicines)
+        # curr_output = mark + hours + mins + " " + stringifyList(takenMedicines)
         # print(curr_output)
         output += (curr_output + "\n")
 
@@ -127,9 +134,9 @@ outputToFile(output)
 idx = 0
 for med in medicines:
     print("Medicine {}: {}".format(idx+1, medicines[idx].calculateErrorRate()))
-#     # print("Shifts AHEAD: {}".format(medicines[idx].shifts['1']))
-#     # print("Shifts BEHIND: {}".format(medicines[idx].shifts['0']))
-#     # print("Shift times: {}".format(medicines[idx].shiftTimes))
+    # print("Shifts AHEAD: {}".format(medicines[idx].shifts['1']))
+    # print("Shifts BEHIND: {}".format(medicines[idx].shifts['0']))
+    # print("Shift times: {}".format(medicines[idx].shiftTimes))
     idx += 1
 # idx = 0
 # for med in medicines:

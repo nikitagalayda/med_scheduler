@@ -33,11 +33,14 @@ class Medicine():
             return True
         return False
 
-    def takeMedicine(self):
+    def takeMedicine(self, currentTime, daily):
         self.timeSinceDose = 0
         self.preferredTake = -1
         # self.moveAhead = self.shiftAhead(currentTime, daily)
-        self.moveAhead = None
+        # if(self.moveAhead != None):
+        #     self.shiftTimes.append(currentTime)
+        #     self.shifts[str(self.moveAhead)] += 1
+        # self.moveAhead = None
 
     def checkAhead(self, currentTime, daily):
         # localTime = currentTime % 288
@@ -69,9 +72,9 @@ class Medicine():
                 return
         
         # self.moveAhead = self.shiftAhead(currentTime, daily)
-        if(self.moveAhead != None):
-            self.shiftTimes.append(currentTime)
-            self.shifts[str(self.moveAhead)] += 1
+        # if(self.moveAhead != None):
+        #     self.shiftTimes.append(currentTime)
+        #     self.shifts[str(self.moveAhead)] += 1
     
     # for shifting towards type 0 EXPERIMENTAL
     def shiftAhead(self, currentGlobalTime, daily):
